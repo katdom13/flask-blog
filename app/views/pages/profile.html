@@ -1,10 +1,12 @@
 {% extends 'layouts/app.html' %}
 {% import 'macros/form.html' as f with context %}
+{% import 'macros/flash.html' as flash with context %}
 
 {% block title %}My Account{% endblock %}
 
 {% block content %}
     <div class="content-section">
+        {{ flash.render() }}
         <form method="POST" action="" enctype="multipart/form-data">
             <div class="d-flex flex-column justify-content-center align-items-center">
                 <div class="form-group"
