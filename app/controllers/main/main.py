@@ -27,16 +27,21 @@ main = Blueprint('main', __name__)
 @main.route('/login')
 def login_page():
     if(current_user.is_authenticated and current_user.is_active):
-        return redirect(url_for('main.home_page'))
+        return redirect(url_for('main.home'))
     else:
         return render_template('/pages/login.html')
 
 
 @main.route('/dashboard')
 @login_required
-def home_page():
+def home():
     posts = Post.get_all_posts()
     return render_template('/pages/home.html', posts=posts)
+
+
+@main.route('/about')
+def about():
+    return render_template('/pages/about.html')
 
 
 @main.route('/recover')
@@ -55,6 +60,18 @@ def reset_password_page(reset_token):
     flash('Token is invalid!', 'danger')
     return redirect(url_for('main.login_page'))
 
+
+@main.route('/<username>')
+def posts(username):
+    account = Account.find(username)
+
+    if not account:
+        return redirect(url_for('error._404'))
+
+    posts = account.get_posts()
+    return render_template('/pages/posts.html', account=account, posts=posts)
+
+
 # ======================= METHODS ========================
 
 
@@ -67,7 +84,7 @@ def login():
             next_url = request.args.get('next')
             if next_url:
                 return redirect(urljoin(request.host_url, next_url))
-            return redirect(url_for('main.home_page'))
+            return redirect(url_for('main.home'))
         else:
             flash('That account is disabled', 'danger')
     else:
@@ -86,7 +103,7 @@ def logout():
 @main.route('/signup', methods=['GET', 'POST'])
 def signup():
     if(current_user.is_authenticated and current_user.is_active):
-        return redirect(url_for('main.home_page'))
+        return redirect(url_for('main.home'))
 
     form = AccountForm(request.form)
 
@@ -100,7 +117,7 @@ def signup():
 
         if login_user(account) and account.is_active():
             account.update_activity_tracking(request.remote_addr)
-            return redirect(url_for('main.home_page'))
+            return redirect(url_for('main.home'))
 
     return render_template('/pages/signup.html', form=form)
 
@@ -145,7 +162,7 @@ def create():
 
         post.save()
 
-        return redirect(url_for('main.home_page'))
+        return redirect(url_for('main.home'))
 
     return render_template('/pages/write_post.html', form=form)
 
@@ -156,7 +173,7 @@ def delete(post_id):
     if post:
         post.delete()
 
-    return redirect(url_for('main.home_page'))
+    return redirect(url_for('main.home'))
 
 
 @main.route('/profile', methods=['GET', 'POST'])
@@ -214,9 +231,13 @@ def change_password():
     form = AccountForm(obj=current_user)
 
     if form.validate_on_submit():
-        form.populate_obj(current_user)
-        current_user.save()
+        if password_decrypt(request.form.get('old_password'), current_user.password):
+            current_user.password = password_encrypt(request.form.get('password'))
+            current_user.save()
+            flash('Password changed succesfully', 'success')
+        else:
+            flash('Entered password does not match your current password', 'danger')
+    else:
+        flash('Password was not changed', 'danger')
 
-        return(redirect(url_for('main.profile')))
-
-    return render_template('/pages/profile.html', form=form)
+    return redirect(url_for('main.profile'))

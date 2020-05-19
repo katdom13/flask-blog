@@ -12,7 +12,7 @@
                 {{ flash.render() }}
                 <div class="form-group">
                     <label for="identity"
-                    class="form-control-label font-weight-bold">
+                    class="form-control-label">
                         Username/Email
                     </label>
                     <input type="text" name="identity" id="identity"
@@ -21,7 +21,7 @@
                 </div>
                 <div class="form-group">
                     <label for="password"
-                    class="form-control-label font-weight-bold">
+                    class="form-control-label">
                         Password
                     </label>
                     <input type="password" name="password"
@@ -34,14 +34,14 @@
                     Submit
                 </button>
                 <small class="text-muted ml-2">
-                    <a href="#">Forgot Password?</a>
+                    <a href="{{ url_for('main.recover_account_page') }}">Forgot Password?</a>
                 </small>
             </div>
         </form>
     </div>
     <div class="border-top pt-3">
         <small class="text-muted">
-            Need An Account? <a class="ml-2" href="#">Sign Up Now</a>
+            Need An Account? <a class="ml-2" href="{{ url_for('main.signup') }}">Sign Up Now</a>
         </small>
     </div>
 

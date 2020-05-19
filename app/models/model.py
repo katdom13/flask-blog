@@ -19,7 +19,6 @@ class Account(db.Model, UserMixin, ResourceMixin):
     active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
     profile_pic = db.Column(db.String(300), nullable=False, default='static/images/default.jpg')
 
-
     sign_in_count = db.Column(db.Integer, nullable=False, default=0)
     current_sign_in_date = db.Column(db.DateTime)
     current_sign_in_ip = db.Column(db.String(200))
@@ -57,6 +56,15 @@ class Account(db.Model, UserMixin, ResourceMixin):
         self.current_sign_in_date = datetime.now()
         self.current_sign_in_ip = ip_address
         self.save()
+
+    def get_posts(self, page=None):
+        if page is None:
+            return self.posts
+        else:
+            return Post.query.filter_by(Post.account_id == self.id)\
+                .order_by(Post.create_date.desc())\
+                .paginate(page=page, per_page=5)
+
 
 class Post(db.Model, ResourceMixin):
 
