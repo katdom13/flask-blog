@@ -8,6 +8,10 @@ app = Flask(__name__, template_folder='../views', static_folder='../static')
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../blog.db'
+app.config['NOREPLY_EMAIL'] = 'favy.noreply@gmail.com'
+app.config['NOREPLY_PASSWORD'] = 'favy.favy'
+app.config['NOREPLY_DOMAIN'] ='smtp.gmail.com'
+app.config['NOREPLY_PORT'] = 587
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)

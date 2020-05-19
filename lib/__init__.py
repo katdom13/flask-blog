@@ -6,3 +6,5 @@ from lib.lib import (
     ModelForm,
     choices_from_dict
 )
+
+from lib.email import EmailServer

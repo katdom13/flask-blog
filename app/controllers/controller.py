@@ -10,3 +10,7 @@ app.register_blueprint(main)
 @app.route('/')
 def start():
     return redirect(url_for('main.signup'))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('/errors/404.html')

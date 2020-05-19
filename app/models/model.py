@@ -1,7 +1,10 @@
-from app.config import db
+from app.config import db, app
 from flask_login import UserMixin
 from app.lib import ResourceMixin
 from datetime import datetime
+from itsdangerous import (URLSafeTimedSerializer,
+  TimedJSONWebSignatureSerializer)
+
 class Account(db.Model, UserMixin, ResourceMixin):
 
     __tablename__ = 'account'
@@ -30,6 +33,22 @@ class Account(db.Model, UserMixin, ResourceMixin):
 
     def is_active(self):
         return self.active
+
+    def serialize_token(self, expiration=300):
+        private_key = app.config['SECRET_KEY']
+        serializer = TimedJSONWebSignatureSerializer(private_key, expiration)
+        return serializer.dumps({'email': self.email}).decode('utf-8')
+
+    @classmethod
+    def deserialize_token(cls, token):
+        private_key = TimedJSONWebSignatureSerializer(app.config['SECRET_KEY'])
+
+        try:
+            decoded_payload = private_key.loads(token)
+            return Account.find(decoded_payload.get('email'))
+
+        except Exception:
+            return None
 
     def update_activity_tracking(self, ip_address):
         self.sign_in_count = self.sign_in_count + 1

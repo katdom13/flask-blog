@@ -17,6 +17,7 @@ from flask_login import (
 from lib import password_encrypt, password_decrypt, generate_random_password, upload_file
 from app.forms import AccountForm, PostForm
 from app.models import Account, Post
+from app.lib import BlogEmail
 from urllib.parse import urljoin
 
 main = Blueprint('main', __name__)
@@ -37,6 +38,22 @@ def home_page():
     posts = Post.get_all_posts()
     return render_template('/pages/home.html', posts=posts)
 
+
+@main.route('/recover')
+def recover_account_page():
+    return render_template('/pages/recover.html')
+
+
+@main.route('/reset/<reset_token>')
+def reset_password_page(reset_token):
+    account = Account.deserialize_token(reset_token)
+    form = AccountForm(obj=account)
+
+    if account:
+        return render_template('/pages/reset.html', form=form, reset_token=reset_token, account=account)
+
+    flash('Token is invalid!', 'danger')
+    return redirect(url_for('main.login_page'))
 
 # ======================= METHODS ========================
 
@@ -86,6 +103,36 @@ def signup():
             return redirect(url_for('main.home_page'))
 
     return render_template('/pages/signup.html', form=form)
+
+
+@main.route('/recover', methods=['POST'])
+def recover_account():
+    account = Account.find(request.form.get('identity'))
+
+    if account:
+        reset_token = account.serialize_token()
+        BlogEmail.send_password_recovery_email(account, reset_token)
+
+        return redirect(url_for('main.recover_account'))
+
+    flash('Account does not exist', 'danger')
+    return redirect(url_for('main.login_page'))
+
+
+@main.route('/reset/<reset_token>', methods=['POST'])
+def reset_password(reset_token):
+    account = Account.deserialize_token(reset_token)
+    form = AccountForm(obj=account)
+
+    if account and form.validate_on_submit():
+        account.password = password_encrypt(request.form.get('password'))
+        account.save()
+
+        flash('Password has been reset', 'success')
+        return redirect(url_for('main.login_page'))
+
+    flash('An error occurred', 'danger')
+    return redirect(url_for('main.login_page'))
 
 
 @main.route('/create', methods=['GET', 'POST'])
@@ -159,3 +206,17 @@ def upload():
 
     flash('An Error occurred', 'danger')
     return redirect(url_for('main.profile'))
+
+
+@main.route('/change_password', methods=['POST'])
+@login_required
+def change_password():
+    form = AccountForm(obj=current_user)
+
+    if form.validate_on_submit():
+        form.populate_obj(current_user)
+        current_user.save()
+
+        return(redirect(url_for('main.profile')))
+
+    return render_template('/pages/profile.html', form=form)
