@@ -1,0 +1,46 @@
+{% extends 'layouts/app.html' %}
+{% import 'macros/form.html' as f with context %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">
+                    Sign up
+                </legend>
+
+                <!-- First name -->
+                {{ f.form_tag(form.first_name, class_="form-control-lg") }}
+
+                <!-- Last name -->
+                {{ f.form_tag(form.last_name, class_="form-control-lg") }}
+
+                <!-- Username -->
+                {{ f.form_tag(form.username, class_="form-control-lg") }}
+
+                <!-- Email -->
+                {{ f.form_tag(form.email, class_="form-control-lg") }}
+
+                <!-- Password -->
+                {{ f.form_tag(form.password, class_="form-control-lg") }}
+
+                <!-- Confirm password -->
+                {{ f.form_tag(form.confirm_pass, class_="form-control-lg") }}
+            </fieldset>
+            <div class="form-group">
+                <button type="submit"
+                class="btn btn-outline-info">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Already Have An Account? <a class="ml-2" href="#">Sign In</a>
+        </small>
+    </div>
+{% endblock %}

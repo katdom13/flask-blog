@@ -1,0 +1,89 @@
+{# Render a form with CSRF token #}
+{%- macro form_tag(endpoint, id='', class_='', method='POST') -%}
+    <form action="{{ url_for(endpoint, **kwargs) }}"
+    method="{{ method }}"
+    id="{{ id }}"
+    class="{{ class_ }}">
+        {{ form.hidden_tag() }}
+        {{ caller() }}
+    </form>
+{%- endmacro -%}
+
+
+{# Render a form group #}
+{%- macro form_group(f, class_='', value='', placeholder='', label='', id='') -%}
+    {% if f.type == 'BooleanField' %}
+        <div class="checkbox {{ class_ }}">
+            {{ checkbox_field(f, label=label, **kwargs) }}
+        </div>
+    {% else %}
+        <div class="form-group {{ class_ }}">
+            {{ field_label(f, text=label) }}
+            {{ field(f, class_=class_, value=value, placeholder=placeholder, id=id, **kwargs) }}
+        </div>
+    {% endif %}
+{%- endmacro -%}
+
+
+{# Render a form field label with visual aid to see if required #}
+{%- macro field_label(f, text='') -%}
+
+    {% if text == '' %}
+        {% set text = f.label.text %}
+    {% endif %}
+
+    {% if f.flags.required %}
+        {{ f.label(class="form-control-label font-weight-bold",
+            text=text + " *") }}
+    {% else %}
+        {{ f.label(class="form-control-label font-weight-bold",
+            text=text) }}
+    {% endif %}
+
+{%- endmacro -%}
+
+
+{# Render a form field #}
+{%- macro field(f, class_='', value='', placeholder='', id='') -%}
+
+    {% if value == '' and request.form.get(f.name) %}
+        {% set value = request.form.get(f.name) %}
+    {% endif %}
+
+    {% if f.errors %}
+
+        {% if id != '' %}
+            {{ f(class="form-control is-invalid class_", placeholder=placeholder, id=id) }}
+        {% else %}
+            {{ f(class="form-control is-invalid class_", placeholder=placeholder) }}
+        {% endif %}
+
+
+        <div class="invalid-feedback">
+            {% for error in f.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+
+    {% else %}
+
+        {% if id != '' %}
+            {{ f(class="form-control class_", value=value, placeholder=placeholder, id=id) }}
+        {% else %}
+            {{ f(class="form-control class_", value=value, placeholder=placeholder) }}
+        {% endif %}
+
+    {% endif %}
+
+{%- endmacro -%}
+
+
+{# Render a checkbox field #}
+{%- macro checkbox_field(f, label='') -%}
+
+    {% if label == '' %}
+        {% set label = f.label.text %}
+    {% endif %}
+
+    {{ f(type='checkbox', **kwargs) }} {{ f.label(text=label) }}
+{%- endmacro -%}

@@ -1,0 +1,48 @@
+{% extends 'layouts/app.html' %}
+{% import 'macros/flash.html' as flash with context %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST" action="">
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Log In</legend>
+                {{ flash.render() }}
+                <div class="form-group">
+                    <label for="identity"
+                    class="form-control-label font-weight-bold">
+                        Username/Email
+                    </label>
+                    <input type="text" name="identity" id="identity"
+                    class="form-control form-control-lg"
+                    placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="password"
+                    class="form-control-label font-weight-bold">
+                        Password
+                    </label>
+                    <input type="password" name="password"
+                    class="form-control form-control-lg">
+                </div>
+            </fieldset>
+            <div class="form-group">
+                <button type="submit"
+                class="btn btn-outline-info">
+                    Submit
+                </button>
+            </div>
+            <small class="text-muted ml-2">
+                <a href="#">Forgot Password?</a>
+            </small>
+        </form>
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Need An Account? <a class="ml-2" href="#">Sign Up Now</a>
+        </small>
+    </div>
+
+{% endblock %}
