@@ -34,19 +34,7 @@ def login_page():
 @main.route('/dashboard')
 @login_required
 def home_page():
-    pass
-
-
-@main.route('/profile')
-@login_required
-def profile_page():
-    pass
-
-
-@main.route('/post/<post_id>')
-@login_required
-def post_page(post_id):
-    pass
+    return render_template('/pages/home.html')
 
 
 # ======================= METHODS ========================
@@ -79,6 +67,9 @@ def logout():
 
 @main.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if(current_user.is_authenticated and current_user.is_active):
+        return redirect(url_for('main.home_page'))
+
     form = AccountForm(request.form)
 
     if form.validate_on_submit():
@@ -109,3 +100,32 @@ def create():
         return redirect(url_for('main.home_page'))
 
     return render_template('/pages/write_post.html', form=form)
+
+
+@main.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    form = AccountForm(obj=current_user)
+
+    if form.validate_on_submit():
+        form.populate_obj(current_user)
+        current_user.save()
+
+        return(redirect(url_for('main.profile')))
+
+    return render_template('/pages/profile.html', form=form)
+
+
+@main.route('/post/<post_id>', methods=['GET', 'POST'])
+@login_required
+def post(post_id):
+    form = PostForm(request.form)
+    post = Post.find(post_id)
+
+    if form.validate_on_submit():
+        form.populate_obj(post)
+        post.save()
+
+        return redirect(url_for('main.post', post_id=post.id))
+
+    return render_template('/pages/post.html', form=form, post=post)

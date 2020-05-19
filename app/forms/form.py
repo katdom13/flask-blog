@@ -19,6 +19,7 @@ from wtforms_components import EmailField, Email
 from wtforms_alchemy import Unique
 from lib import ModelForm, choices_from_dict
 from app.models import Account, Post
+from app.config import db
 
 class AccountForm(ModelForm):
     class Meta:

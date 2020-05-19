@@ -1,7 +1,7 @@
 from app.config import db
 from flask_login import UserMixin
 from app.lib import ResourceMixin
-
+from datetime import datetime
 class Account(db.Model, UserMixin, ResourceMixin):
 
     __tablename__ = 'account'
@@ -16,10 +16,28 @@ class Account(db.Model, UserMixin, ResourceMixin):
     active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
     profile_pic = db.Column(db.String(300), nullable=False, default='static/images/default.jpg')
 
+
+    sign_in_count = db.Column(db.Integer, nullable=False, default=0)
+    current_sign_in_date = db.Column(db.DateTime)
+    current_sign_in_ip = db.Column(db.String(200))
+    last_sign_in_date = db.Column(db.DateTime)
+    last_sign_in_ip = db.Column(db.String(200))
+
     @classmethod
     def find(cls, identity):
         return Account.query.filter((cls.email == identity)
             | (cls.username == identity)).first()
+
+    def is_active(self):
+        return self.active
+
+    def update_activity_tracking(self, ip_address):
+        self.sign_in_count = self.sign_in_count + 1
+        self.last_sign_in_date = self.current_sign_in_date
+        self.last_sign_in_ip = self.current_sign_in_ip
+        self.current_sign_in_date = datetime.now()
+        self.current_sign_in_ip = ip_address
+        self.save()
 
 class Post(db.Model, ResourceMixin):
 
