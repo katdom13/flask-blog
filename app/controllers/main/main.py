@@ -14,7 +14,7 @@ from flask_login import (
         logout_user
     )
 
-from lib import password_encrypt, password_decrypt, generate_random_password
+from lib import password_encrypt, password_decrypt, generate_random_password, upload_file
 from app.forms import AccountForm, PostForm
 from app.models import Account, Post
 from urllib.parse import urljoin
@@ -129,3 +129,23 @@ def post(post_id):
         return redirect(url_for('main.post', post_id=post.id))
 
     return render_template('/pages/post.html', form=form, post=post)
+
+
+@main.route('/upload_picture', methods=['POST'])
+@login_required
+def upload():
+
+    if 'profile-pic-input' not in request.files:
+        flash('No image uploaded', 'danger')
+        return redirect(url_for('main.error_page'))
+
+    image_file = request.files.get('profile-pic-input')
+
+    if image_file:
+        directory = upload_file(image_file, user=current_user)
+        current_user.profile_pic = directory
+        current_user.save()
+        return redirect(url_for('main.profile'))
+
+    flash('An Error occurred', 'danger')
+    return redirect(url_for('main.profile'))
