@@ -3,8 +3,27 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-
+    {% for post in posts %}
     <article class="media content-section">
+        <div class="mt-1">
+            <img class="rounded-circle article-img" src="/{{ post.account.profile_pic }}">
+        </div>
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('main.posts', username=post.account.username) }}">{{ post.account.first_name }} {{ post.account.last_name }}</a>
+                <small class="text-muted">{{ post.create_date }}</small>
+            </div>
+            <h2>
+                <a href="{{ url_for('main.post', post_id=post.id) }}" class="article-title">{{ post.title }}</a>
+            </h2>
+            <p class="article-content">
+                {{ post.content }}
+            </p>
+        </div>
+    </article>
+    {% endfor %}
+
+    <!-- <article class="media content-section">
         <div class="mt-1">
             <img class="rounded-circle article-img" src="/static/images/default.jpg">
         </div>
@@ -56,6 +75,6 @@
                 The pug is a breed of dog with physically distinctive features of a wrinkly, short-muzzled face, and curled tail. The breed has a fine, glossy coat that comes in a variety of colours, most often fawn or black, and a compact square body with well-developed muscles.
             </p>
         </div>
-    </article>
+    </article> -->
 
 {% endblock %}

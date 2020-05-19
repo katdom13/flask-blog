@@ -4,27 +4,27 @@
 
 {% block content %}
 
-  <h1 class="mb-3">Posts by Katherine Domingo (3)</h1>
-
-  <article class="media content-section">
+  <h1 class="mb-3">Posts by {{ account.first_name }} {{ account.last_name }} ({{ posts|count }})</h1>
+    {% for post in posts %}
+    <article class="media content-section">
         <div class="mt-1">
-            <img class="rounded-circle article-img" src="/static/images/default.jpg">
+            <img class="rounded-circle article-img" src="/{{ post.account.profile_pic }}">
         </div>
         <div class="media-body">
             <div class="article-metadata">
-                <a class="mr-2" href="#">Katherine Domingo</a>
-                <small class="text-muted">May 19, 2020</small>
+                <a class="mr-2" href="{{ url_for('main.posts', username=post.account.username) }}">{{ post.account.first_name }} {{ post.account.last_name }}</a>
+                <small class="text-muted">{{ post.create_date }}</small>
             </div>
             <h2>
-                <a href="#" class="article-title">I Like Owls</a>
+                <a href="{{ url_for('main.post', post_id=post.id) }}" class="article-title">{{ post.title }}</a>
             </h2>
             <p class="article-content">
-                Owls are birds from the order Strigiformes, which includes over 200 species of mostly solitary and nocturnal birds of prey typified by an upright stance, a large, broad head, binocular vision, binaural hearing, sharp talons, and feathers adapted for silent flight.
+                {{ post.content }}
             </p>
         </div>
     </article>
-
-    <article class="media content-section">
+    {% endfor %}
+   <!--  <article class="media content-section">
         <div class="mt-1">
             <img class="rounded-circle article-img" src="/static/images/default.jpg">
         </div>
@@ -58,6 +58,6 @@
                 The pug is a breed of dog with physically distinctive features of a wrinkly, short-muzzled face, and curled tail. The breed has a fine, glossy coat that comes in a variety of colours, most often fawn or black, and a compact square body with well-developed muscles.
             </p>
         </div>
-    </article>
+    </article> -->
 
 {% endblock %}

@@ -10,14 +10,14 @@
         </div>
         <div class="media-body">
             <div class="article-metadata">
-                <a class="mr-2" href="#">Katherine Domingo</a>
-                <small class="text-muted">May 20, 2020</small>
+                <a class="mr-2" href="{{ url_for('main.posts', username=post.account.username ) }}">{{ post.account.first_name }} {{ post.account.last_name }}</a>
+                <small class="text-muted">{{ post.create_date }}</small>
             </div>
             <h2>
-                <a href="#" class="article-title">Tups is an Owl</a>
+                <a href="#" class="article-title">{{ post.title }}</a>
             </h2>
             <p class="article-content">
-                Tups looks like an Owl
+                {{ post.content }}
             </p>
         </div>
     </article>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+                    <form action="{{ url_for('main.delete', post_id=post.id) }}" method="POST">
                         <input class="btn btn-danger" type="submit" value="Delete">
                     </form>
                 </div>

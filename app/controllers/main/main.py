@@ -154,13 +154,14 @@ def reset_password(reset_token):
 
 
 @main.route('/create', methods=['GET', 'POST'])
+@login_required
 def create():
     form = PostForm(request.form)
 
     if form.validate_on_submit():
         post = Post()
         form.populate_obj(post)
-
+        post.account_id = current_user.id
         post.save()
 
         return redirect(url_for('main.home'))
@@ -169,6 +170,7 @@ def create():
 
 
 @main.route('/delete/<post_id>', methods=['POST'])
+@login_required
 def delete(post_id):
     post = Post.find(post_id)
     if post:
@@ -203,7 +205,7 @@ def post(post_id):
 
         return redirect(url_for('main.post', post_id=post.id))
 
-    return render_template('/pages/post.html', form=form, post=post)
+    return render_template('/pages/read_post.html', form=form, post=post)
 
 
 @main.route('/upload_picture', methods=['POST'])
