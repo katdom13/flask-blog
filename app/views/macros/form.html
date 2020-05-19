@@ -33,10 +33,10 @@
     {% endif %}
 
     {% if f.flags.required %}
-        {{ f.label(class="form-control-label font-weight-bold",
+        {{ f.label(class="form-control-label",
             text=text + " *") }}
     {% else %}
-        {{ f.label(class="form-control-label font-weight-bold",
+        {{ f.label(class="form-control-label",
             text=text) }}
     {% endif %}
 

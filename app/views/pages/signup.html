@@ -7,28 +7,28 @@
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
-            <fieldset class="form-group">
+            <fieldset class="form-group mb-2">
                 <legend class="border-bottom mb-4">
                     Sign up
                 </legend>
 
                 <!-- First name -->
-                {{ f.form_tag(form.first_name, class_="form-control-lg") }}
+                {{ f.form_group(form.first_name, class_="form-control-lg mb-2") }}
 
                 <!-- Last name -->
-                {{ f.form_tag(form.last_name, class_="form-control-lg") }}
+                {{ f.form_group(form.last_name, class_="form-control-lg mb-2") }}
 
                 <!-- Username -->
-                {{ f.form_tag(form.username, class_="form-control-lg") }}
+                {{ f.form_group(form.username, class_="form-control-lg mb-2") }}
 
                 <!-- Email -->
-                {{ f.form_tag(form.email, class_="form-control-lg") }}
+                {{ f.form_group(form.email, class_="form-control-lg mb-2") }}
 
                 <!-- Password -->
-                {{ f.form_tag(form.password, class_="form-control-lg") }}
+                {{ f.form_group(form.password, class_="form-control-lg mb-2") }}
 
                 <!-- Confirm password -->
-                {{ f.form_tag(form.confirm_pass, class_="form-control-lg") }}
+                {{ f.form_group(form.confirm_pass, class_="form-control-lg mb-2") }}
             </fieldset>
             <div class="form-group">
                 <button type="submit"
