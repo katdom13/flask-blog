@@ -1,18 +1,25 @@
-from flask import redirect, url_for
+from flask import redirect, url_for, render_template
 from app.config import app
 from app.controllers.main import main
-from app.controllers.error import error
 
 # =================== Blueprints ===================
 app.register_blueprint(main)
-app.register_blueprint(error)
-
 
 # ======================== PAGES =========================
 @app.route('/')
 def start():
     return redirect(url_for('main.signup'))
 
+@app.errorhandler(403)
+def page_403(err):
+    return render_template('/errors/403.html'), 403
+
+
 @app.errorhandler(404)
-def page_not_found(e):
-    return render_template('/errors/404.html')
+def page_404(err):
+    return render_template('/errors/404.html'), 404
+
+
+@app.errorhandler(500)
+def page_505(err):
+    return render_template('/errors/500.html'), 500

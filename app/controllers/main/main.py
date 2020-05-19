@@ -4,7 +4,8 @@ from flask import (
         url_for,
         Blueprint,
         flash,
-        request
+        request,
+        abort
     )
 
 from flask_login import (
@@ -66,7 +67,7 @@ def posts(username):
     account = Account.find(username)
 
     if not account:
-        return redirect(url_for('error._404'))
+        abort(404, '')
 
     posts = account.get_posts()
     return render_template('/pages/posts.html', account=account, posts=posts)
