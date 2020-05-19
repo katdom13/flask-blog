@@ -2,30 +2,42 @@
 {% import 'macros/form.html' as f with context %}
 {% import 'macros/flash.html' as flash with context %}
 
-{% block title %} New Post {% endblock %}
+{% if 'create' in request.endpoint %}
+    {% set title = 'New Post' %}
+    {% set endpoint = 'main.create' %}
+    {% set kwargs = {} %}
+    {% set button = 'Post' %}
+{% else %}
+    {% set title = 'Update Post' %}
+    {% set endpoint = 'main.update' %}
+    {% set kwargs = { 'post_id': post.id } %}
+    {% set button = 'Update' %}
+    {% set post_title = post.title %}
+    {% set post_content = post.content %}
+{% endif %}
+
+{% block title %} {{ title }} {% endblock %}
 
 {% block content %}
 
     <div class="content-section">
         {{ flash.render() }}
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
+        {% call f.form_tag(endpoint, **kwargs) %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">New Post</legend>
-
+                <legend class="border-bottom mb-4">{{ title }}</legend>
                 <!-- Title -->
-                {{ f.form_group(form.title, class_="form-control-lg mb-5") }}
+                {{ f.form_group(form.title, class_="form-control-lg mb-5", value=post_title) }}
 
                 <!-- Content -->
-                {{ f.form_group(form.content, class_="form-control-lg mb-5") }}
+                {{ f.form_group(form.content, class_="form-control-lg mb-5", value=post_content) }}
             </fieldset>
             <div class="form-group form-control-lg">
                 <button type="submit"
                 class="btn btn-outline-info">
-                    Submit
+                    {{ button }}
                 </button>
             </div>
-        </form>
+        {% endcall %}
     </div>
 
 {% endblock %}

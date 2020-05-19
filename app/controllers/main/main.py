@@ -169,7 +169,22 @@ def create():
     return render_template('/pages/write_post.html', form=form)
 
 
-@main.route('/delete/<post_id>', methods=['POST'])
+@main.route('/post/<post_id>/update', methods=['GET', 'POST'])
+@login_required
+def update(post_id):
+    post = Post.find(post_id)
+    form = PostForm(obj=post)
+
+    if form.validate_on_submit():
+        form.populate_obj(post)
+        post.save()
+
+        return redirect(url_for('main.home'))
+
+    return render_template('/pages/write_post.html', form=form, post=post)
+
+
+@main.route('/post/<post_id>/delete', methods=['POST'])
 @login_required
 def delete(post_id):
     post = Post.find(post_id)
