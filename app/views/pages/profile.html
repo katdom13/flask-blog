@@ -38,38 +38,17 @@
             </div>
         </div> -->
 
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <fieldset class="form-group mb-4">
-                <legend class="border-bottom mb-4">Account Info</legend>
+        <div id="div-profile">
 
-                <!-- First name -->
-                {{ f.form_group(form.first_name, class_="form-control-md mb-3", value=current_user.first_name) }}
-
-                <!-- Last name -->
-                {{ f.form_group(form.last_name, class_="form-control-md mb-3", value=current_user.last_name) }}
-
-                <!-- Username -->
-                {{ f.form_group(form.username, class_="form-control-md mb-3", value=current_user.username) }}
-
-                <!-- Email -->
-                {{ f.form_group(form.email, class_="form-control-md mb-3", value=current_user.email) }}
-            </fieldset>
-            <div class="form-group form-control-md">
-                <button type="submit"
-                class="btn btn-outline-info">
-                    Submit
-                </button>
-            </div>
-            <hr />
-            <div class="form-group form-control-md">
-                <button
-                type="button" class="btn btn-sm btn-outline-dark font-weight-bold"
-                data-toggle="modal" data-target="#password-modal">
-                    Change Password
-                </button>
-            </div>
-        </form>
+        </div>
+        <hr />
+        <div class="form-group form-control-md">
+            <button
+            type="button" class="btn btn-sm btn-outline-dark font-weight-bold"
+            data-toggle="modal" data-target="#password-modal">
+                Change Password
+            </button>
+        </div>
     </div>
 
     <div class="modal fade" id="password-modal" tabindex="-1" role="dialog" aria-labelledby="password-modal-label" aria-hidden="true">
@@ -111,6 +90,9 @@
 {% block script %}
 <script type="text/javascript">
     $('document').ready( function() {
+
+        $('#div-profile').load("{{ url_for('div.profile', action='show') }}")
+
         $('#profile-pic-btn').on('click', function() {
             $('#profile-pic-input').trigger('click');
         });
@@ -118,6 +100,8 @@
         $('#profile-pic-input').change(function() {
             $(this).closest('form').submit();
         });
+
+
     });
 </script>
 {% endblock %}

@@ -1,9 +1,11 @@
 from flask import redirect, url_for, render_template
 from app.config import app
 from app.controllers.main import main
+from app.controllers.div import div
 
 # =================== Blueprints ===================
 app.register_blueprint(main)
+app.register_blueprint(div)
 
 # ======================== PAGES =========================
 @app.route('/')

@@ -1,0 +1,126 @@
+{% import 'macros/form.html' as f with context %}
+
+{% if not action or action == 'show' %}
+    <fieldset>
+        <legend class="border-bottom">Account Info</legend>
+    </fieldset>
+    <div class="d-flex flex-row-reverse mb-1">
+        <button type="button"
+        id="account-edit-btn"
+        class="btn btn-sm btn-basic">
+            <i class="fas fa-edit"></i> <span>Edit</span>
+        </button>
+    </div>
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th>First Name</th>
+                <td>
+                    <span style="margin-right: 1.2em;">{{ current_user.first_name }}</span>
+                    <span style="color: grey;
+                                font-size: 1.2em;
+                                text-decoration: none;
+                                cursor: pointer;">
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Last Name</th>
+                <td>
+                    <span style="margin-right: 1.2em;">{{ current_user.last_name }}</span>
+                    <span style="color: grey;
+                                font-size: 1.2em;
+                                text-decoration: none;
+                                cursor: pointer;">
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>
+                    <span style="margin-right: 1.2em;">{{ current_user.username }}</span>
+                    <span style="color: grey;
+                                font-size: 1.2em;
+                                text-decoration: none;
+                                cursor: pointer;">
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>
+                    <span style="margin-right: 1.2em;">{{ current_user.email }}</span>
+                    <span style="color: grey;
+                                font-size: 1.2em;
+                                text-decoration: none;
+                                cursor: pointer;">
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+{% elif action == 'edit' %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend class="border-bottom mb-4">Account Info</legend>
+
+            <!-- First name -->
+            {{ f.form_group(form.first_name, class_="form-control-md mb-3", value=current_user.first_name) }}
+
+            <!-- Last name -->
+            {{ f.form_group(form.last_name, class_="form-control-md mb-3", value=current_user.last_name) }}
+
+            <!-- Username -->
+            {{ f.form_group(form.username, class_="form-control-md mb-3", value=current_user.username) }}
+
+            <!-- Email -->
+            {{ f.form_group(form.email, class_="form-control-md mb-3", value=current_user.email) }}
+        </fieldset>
+        <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="form-group form-control-md mr-3">
+            <button type="button"
+            id="account-save-btn"
+            class="btn btn-outline-info">
+                Submit
+            </button>
+        </div>
+        <div class="form-group form-control-md mr-3">
+            <button type="button"
+            id="account-cancel-btn"
+            class="btn btn-outline-secondary">
+                Cancel
+            </button>
+        </div>
+        </div>
+    </form>
+{% endif %}
+
+{% block script %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#account-edit-btn').on('click', function() {
+                $('#div-profile').load("{{ url_for('div.profile', action='edit') }}");
+            });
+
+            $('#account-cancel-btn').on('click', function() {
+                $('#div-profile').load("{{ url_for('div.profile', action='show') }}");
+            });
+
+            $('#account-save-btn').on('click', function() {
+                $.ajax({
+                    url: "{{ url_for('main.profile') }}",
+                    type: "POST",
+                    data: $('#account-save-btn').closest('form').serialize(),
+                    success: function(result) {
+                        $('#div-profile').html(result)
+                    },
+                    error: function(xhr, resp, text) {
+                        console.log('account-save-btn -->', xhr, resp, text);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
