@@ -56,3 +56,7 @@ class Post(db.Model, ResourceMixin):
     def find(cls, identity):
         return Post.query.filter((cls.title == identity)
             | (cls.id == identity)).first()
+
+    @classmethod
+    def get_all_posts(cls):
+        return Post.query.all()

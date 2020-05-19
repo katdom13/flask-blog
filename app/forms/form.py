@@ -38,4 +38,6 @@ class AccountForm(ModelForm):
 class PostForm(ModelForm):
     class Meta:
         model = Post
-    pass
+
+    title = StringField('Title', validators=[DataRequired(), Length(max=100)])
+    content = TextAreaField(validators=[DataRequired(), Length(max=1000)])

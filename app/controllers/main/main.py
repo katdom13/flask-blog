@@ -34,7 +34,8 @@ def login_page():
 @main.route('/dashboard')
 @login_required
 def home_page():
-    return render_template('/pages/home.html')
+    posts = Post.get_all_posts()
+    return render_template('/pages/home.html', posts=posts)
 
 
 # ======================= METHODS ========================
@@ -100,6 +101,15 @@ def create():
         return redirect(url_for('main.home_page'))
 
     return render_template('/pages/write_post.html', form=form)
+
+
+@main.route('/delete/<post_id>', methods=['POST'])
+def delete(post_id):
+    post = Post.find(post_id)
+    if post:
+        post.delete()
+
+    return redirect(url_for('main.home_page'))
 
 
 @main.route('/profile', methods=['GET', 'POST'])
