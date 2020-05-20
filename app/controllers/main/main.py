@@ -34,9 +34,9 @@ def login_page():
 
 
 @main.route('/dashboard')
-@login_required
 def home():
-    posts = Post.get_all_posts()
+    page = request.args.get('page', 1, type=int)
+    posts = Post.get_all_posts(page=page)
     return render_template('/pages/home.html', posts=posts)
 
 
@@ -69,7 +69,8 @@ def posts(username):
     if not account:
         abort(404, '')
 
-    posts = account.get_posts()
+    page = request.args.get('page', 1, type=int)
+    posts = account.get_posts(page=page)
     return render_template('/pages/posts.html', account=account, posts=posts)
 
 

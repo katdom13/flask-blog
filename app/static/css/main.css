@@ -124,3 +124,13 @@ a.article-title:hover {
 nav .dropdown-menu-right {
   right: unset;
 }
+
+.content-section {
+  background: #f5f7f6;
+}
+
+.footer {
+  padding-top: 5px;
+  padding-bottom: 20px;
+  width: 100%;
+}

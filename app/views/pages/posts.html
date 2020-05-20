@@ -3,67 +3,73 @@
 {% block title %}Posts{% endblock %}
 
 {% block content %}
-
-  <h1 class="mb-3">Posts by {{ account.first_name }} {{ account.last_name }} ({{ posts|count }})</h1>
-    {% for post in posts %}
-    <article class="media content-section">
-        <div class="mt-1">
-            <img class="rounded-circle article-img" src="/{{ post.account.profile_pic }}">
-        </div>
-        <div class="media-body">
-            <div class="article-metadata">
-                <a class="mr-2" href="{{ url_for('main.posts', username=post.account.username) }}">{{ post.account.first_name }} {{ post.account.last_name }}</a>
-                <small class="text-muted">{{ post.create_date }}</small>
-                {% if post.account == current_user %}
-                    <div>
-                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('main.update', post_id=post.id) }}">Update</a>
-                        <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+    <div class="car card-body shadow">
+        <h1>Posts by {{ account.first_name }} {{ account.last_name }} ({{ posts.items|count }})</h1>
+        <hr>
+        {% if not posts or posts.items|length == 0 %}
+            <div class="jumbotron d-flex align-items-center bg-white">
+                <div class="container d-flex align-items-center justify-content-center">
+                    <h1 class="text-gray-500">No posts to show</h1>
+                </div>
+            </div>
+        {% else %}
+            {% for post in posts.items %}
+                <article class="media content-section">
+                    <div class="mt-1">
+                        <img class="rounded-circle article-img" src="/{{ post.account.profile_pic }}">
                     </div>
+                    <div class="media-body">
+                        <div class="article-metadata">
+                            <a class="mr-2" href="{{ url_for('main.posts', username=post.account.username) }}">{{ post.account.first_name }} {{ post.account.last_name }}</a>
+                            <small class="text-muted">{{ post.create_date.strftime("%B %d, %Y") }}</small>
+                            {% if post.account == current_user %}
+                                <div>
+                                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('main.update', post_id=post.id) }}">Update</a>
+                                    <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <h2>
+                            <a href="{{ url_for('main.post', post_id=post.id) }}" class="article-title">{{ post.title }}</a>
+                        </h2>
+                        <p class="article-content">
+                            {{ post.content }}
+                        </p>
+                    </div>
+                </article>
+
+                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <form action="{{ url_for('main.delete', post_id=post.id) }}" method="POST">
+                                    <input class="btn btn-danger" type="submit" value="Delete">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="d-flex justify-content-center mt-2">
+        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if posts.page == page_num %}
+                    <a class="btn btn-info mb-4 mr-2" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                    <a class="btn btn-outline-info mb-4 mr-2" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
                 {% endif %}
-            </div>
-            <h2>
-                <a href="{{ url_for('main.post', post_id=post.id) }}" class="article-title">{{ post.title }}</a>
-            </h2>
-            <p class="article-content">
-                {{ post.content }}
-            </p>
-        </div>
-    </article>
-    {% endfor %}
-   <!--  <article class="media content-section">
-        <div class="mt-1">
-            <img class="rounded-circle article-img" src="/static/images/default.jpg">
-        </div>
-        <div class="media-body">
-            <div class="article-metadata">
-                <a class="mr-2" href="#">Katherine Domingo</a>
-                <small class="text-muted">May 20, 2020</small>
-            </div>
-            <h2>
-                <a href="#" class="article-title">Tups is an Owl</a>
-            </h2>
-            <p class="article-content">
-                Tups looks like an Owl
-            </p>
-        </div>
-    </article>
-
-    <article class="media content-section">
-        <div class="mt-1">
-            <img class="rounded-circle article-img" src="/static/images/default.jpg">
-        </div>
-        <div class="media-body">
-            <div class="article-metadata">
-                <a class="mr-2" href="#">Katherine Domingo</a>
-                <small class="text-muted">May 21, 2020</small>
-            </div>
-            <h2>
-                <a href="#" class="article-title">Pugs</a>
-            </h2>
-            <p class="article-content">
-                The pug is a breed of dog with physically distinctive features of a wrinkly, short-muzzled face, and curled tail. The breed has a fine, glossy coat that comes in a variety of colours, most often fawn or black, and a compact square body with well-developed muscles.
-            </p>
-        </div>
-    </article> -->
-
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+    </div>
 {% endblock %}

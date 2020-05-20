@@ -61,7 +61,7 @@ class Account(db.Model, UserMixin, ResourceMixin):
         if page is None:
             return self.posts
         else:
-            return Post.query.filter_by(Post.account_id == self.id)\
+            return Post.query.filter(Post.account_id == self.id)\
                 .order_by(Post.create_date.desc())\
                 .paginate(page=page, per_page=5)
 
@@ -84,6 +84,24 @@ class Post(db.Model, ResourceMixin):
         return Post.query.filter((cls.title == identity)
             | (cls.id == identity)).first()
 
+    # @classmethod
+    # def get_all_posts(cls):
+    #     return Post.query.all()
+
     @classmethod
-    def get_all_posts(cls):
-        return Post.query.all()
+    def get_all_posts(cls, page=None):
+        if page is None:
+            return Post.query.order_by(Post.create_date.desc()).all()
+        else:
+            return Post.query.order_by(Post.create_date.desc()).paginate(page=page, per_page=5)
+
+
+
+
+
+
+
+
+
+
+
